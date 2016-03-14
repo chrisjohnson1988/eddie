@@ -70,4 +70,4 @@ Adjust the end of your `/etc/rc.local` to look like:
 - [Solar Powered Mini-Weather Station](http://forum.mysensors.org/topic/841/solar-powered-mini-weather-station) - A very similar project
 - [Home Automation for Geeks](http://homeautomationforgeeks.com/rf24software.shtml) - wiring setup
 - [@wshelley](https://github.com/wshelley) - Thanks to Wayne for his help and ideas
-
+- [@joncooper65] - Thanks to Jon for introducing me to ThingSpeak and the name Eco-Dome (which became eddie)
