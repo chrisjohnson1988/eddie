@@ -5,7 +5,8 @@ which transmits his readings to a raspberry pi node which relays the readings
 to a [thingspeak channel](https://thingspeak.com/channels/92463).
 
 Eddie is deployed in our greenhouse and powered by a 3.7v lithium ion battery
-which is charged by a [cheap solar panel](http://www.amazon.co.uk/gp/product/B00EU6XZLQ).
+which is charged by a [cheap solar panel](http://www.amazon.co.uk/gp/product/B00EU6XZLQ)
+using a [TP4056](http://www.amazon.co.uk/Cars-XCSOURCE%C2%AE-Lithium-Battery-Charging-TE106/dp/B00SR4FH4A).
 Two DHT22 sensors are used, one for inside the greenhouse and one which is outside. The
 project uses nRF24L01+ modules to transmit reading. Our setup uses the more powerful
 nRF24L01+ with PA and LNA on the raspberry pi side to increase the transmission range.
