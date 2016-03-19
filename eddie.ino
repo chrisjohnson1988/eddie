@@ -12,7 +12,7 @@ RF24Network network(radio);
 
 const uint16_t MY_ADDR = 01;
 const uint16_t RASPBERRYPI_ADDR = 00;
-const int SOIL_VCC = 2;
+const int SOIL_VCC = 9;
 
 struct Payload {
   float in_temp;
@@ -20,7 +20,8 @@ struct Payload {
   float ext_temp;
   float ext_hum;
   float voltage;
-  int soil1;
+  unsigned int soil1;
+  unsigned int soil2;
 };
 
 /**
@@ -69,6 +70,7 @@ struct Payload read() {
   digitalWrite(SOIL_VCC, HIGH);
   delay(100);
   data.soil1 = analogRead(3);
+  data.soil2 = analogRead(0);
   digitalWrite(SOIL_VCC, LOW);
   return data;
 }
@@ -88,6 +90,4 @@ void loop() {
   send(read());
   sleep();
 }
-
-
 
