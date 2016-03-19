@@ -19,6 +19,7 @@ struct Payload {
   float out_hum;
   float voltage;
   int soil1;
+  int soil2;
 };
 
 /**
@@ -36,6 +37,9 @@ int main(int argc, char *argv[]) {
     radio.setCRCLength(RF24_CRC_8);
     network.begin(108, MY_ADDR);
     radio.printDetails();
+    curl_global_init(CURL_GLOBAL_ALL);
+    CURL *curl;
+    curl = curl_easy_init();
 
     while(1) {
       network.update();
@@ -53,22 +57,20 @@ int main(int argc, char *argv[]) {
                << "field3="  << payload.out_temp << "&"
                << "field4="  << payload.out_hum  << "&"
                << "field5="  << payload.soil1    << "&"
-               << "field6="  << payload.voltage;
+               << "field6="  << payload.voltage  << "&"
+               << "field7="  << payload.soil2;
 
-           CURL *curl;
-
-           curl_global_init(CURL_GLOBAL_ALL);
-           curl = curl_easy_init();
            curl_easy_setopt(curl, CURLOPT_URL, data.str().c_str());
            curl_easy_perform(curl);
            std::cout << " Packet Send\n";
          }
       }
+      delay(2000);
     }
     curl_global_cleanup();
     return EXIT_SUCCESS;
   }
-  std::cout << "Expected to THINGSPEAK_API_KEY environment variable to be defined\n";
+  std::cout << "Expected to find THINGSPEAK_API_KEY environment variable to be defined\n";
   return EXIT_FAILURE;
 }
 
