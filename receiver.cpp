@@ -18,8 +18,8 @@ struct Payload {
   float out_temp;
   float out_hum;
   float voltage;
-  int soil1;
-  int soil2;
+  uint16_t soil1;
+  uint16_t soil2;
 };
 
 /**
@@ -56,8 +56,8 @@ int main(int argc, char *argv[]) {
                << "field2="  << payload.in_hum   << "&"
                << "field3="  << payload.out_temp << "&"
                << "field4="  << payload.out_hum  << "&"
-               << "field5="  << payload.soil1    << "&"
-               << "field6="  << payload.voltage  << "&"
+               << "field5="  << payload.voltage  << "&"
+               << "field6="  << payload.soil1    << "&"
                << "field7="  << payload.soil2;
 
            curl_easy_setopt(curl, CURLOPT_URL, data.str().c_str());
