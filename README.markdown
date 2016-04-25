@@ -22,9 +22,10 @@ using the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
 The required libraries are:
 
 - [DHT](https://github.com/adafruit/DHT-sensor-library)
-- [LowPower](https://github.com/rocketscream/Low-Power/)
 - [RF24](https://github.com/TMRh20/RF24.git)
 - [RF24Network](https://github.com/TMRh20/RF24Network.git)
+
+**The RF24Network needs to be customised to enable sleep mode. See `ENABLE_SLEEP_MODE` in `RF24Network_config.h`**
 
 The wiring diagram below describes how the arduino side is wired up.
 
