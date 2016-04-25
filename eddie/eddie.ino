@@ -52,17 +52,17 @@ void setup(void) {
  */
 struct Payload read() {
   Payload data;
-  data.voltage  = analogRead(2) * 4.3 / 1023;
-  data.in_temp  = in_dht.readTemperature();
-  data.in_hum   = in_dht.readHumidity();
-  data.ext_temp = ext_dht.readTemperature();
-  data.ext_hum  = ext_dht.readHumidity();
   //Power up the soil sensor for 100 milliseconds before reading
   digitalWrite(SOIL_VCC, HIGH);
   delay(100);
   data.soil1 = analogRead(3);
   data.soil2 = analogRead(0);
   digitalWrite(SOIL_VCC, LOW);
+  data.voltage  = analogRead(2) * 4.3 / 1023;
+  data.in_temp  = in_dht.readTemperature();
+  data.in_hum   = in_dht.readHumidity();
+  data.ext_temp = ext_dht.readTemperature();
+  data.ext_hum  = ext_dht.readHumidity();
   return data;
 }
 
