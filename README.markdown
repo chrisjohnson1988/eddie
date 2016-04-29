@@ -56,7 +56,7 @@ Having installed the prerequisite libraries:
 
 You can now run the receiver application by
 
-    THINGSPEAK_API_KEY=Y0U4_AP1_K3Y ./receiver
+    EDDIE_API_KEY=Y0U4_AP1_K3Y MINI_EDDIE_API_KEY=An0THER_K3Y ./receiver
 
 ### Running on startup
 
@@ -64,7 +64,7 @@ You can get the application to run on boot of your raspberry pi by adding a line
 
 Adjust the end of your `/etc/rc.local` to look like:
 
-    THINGSPEAK_API_KEY=Y0U4_AP1_K3Y /opt/eddie/receiver &
+    EDDIE_API_KEY=Y0U4_AP1_K3Y MINI_EDDIE_API_KEY=An0THER_K3Y /opt/eddie/receiver &
     exit 0
 
 # Acknowledgements

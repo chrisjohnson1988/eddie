@@ -11,8 +11,8 @@ RF24 radio(RPI_V2_GPIO_P1_15, BCM2835_SPI_CS0, BCM2835_SPI_SPEED_8MHZ);
 RF24Network network(radio);
 
 const uint16_t MY_ADDR = 00;
-const uint16_t ARDUINO_ADDR = 01;
-const uint16_t REMOTE_SOIL_ADDR = 011;
+const uint16_t EDDIE_ADDR = 01;
+const uint16_t MINI_EDDIE_ADDR = 011;
 
 struct Payload {
   float in_temp;
@@ -34,7 +34,9 @@ struct PayloadRemoteSoil {
  * from the arduino sensor node then submit its values to thingspeak
  */
 int main(int argc, char *argv[]) {
-  if(char* api_key = std::getenv("THINGSPEAK_API_KEY")) {
+  char* eddie_key      = std::getenv("EDDIE_API_KEY");
+  char* mini_eddie_key = std::getenv("MINI_EDDIE_API_KEY");
+  if(eddie_key && mini_eddie_key) {
     radio.begin();
     radio.enableDynamicPayloads();
     radio.setAutoAck(1);
@@ -55,30 +57,36 @@ int main(int argc, char *argv[]) {
         RF24NetworkHeader header;
         network.peek(header);
 
-        if(header.from_node == ARDUINO_ADDR) {
+        if(header.from_node == EDDIE_ADDR) {
           Payload payload;
           network.read(header,&payload,sizeof(payload));
           std::stringstream data;
           data << "https://api.thingspeak.com/update"
-               << "?api_key=" << api_key
+               << "?api_key=" << eddie_key
+               << "&field1="  << payload.in_temp
+               << "&field2="  << payload.in_hum
+               << "&field3="  << payload.out_temp
+               << "&field4="  << payload.out_hum
                << "&field5="  << payload.voltage
                << "&field6="  << payload.soil1
                << "&field7="  << payload.soil2;
-
-          if(!std::isnan(payload.in_temp )) { data << "&field1=" << payload.in_temp; }
-          if(!std::isnan(payload.in_hum  )) { data << "&field2=" << payload.in_hum; }
-          if(!std::isnan(payload.out_temp)) { data << "&field3=" << payload.out_temp; }
-          if(!std::isnan(payload.out_hum )) { data << "&field4=" << payload.out_hum; }
 
           curl_easy_setopt(curl, CURLOPT_URL, data.str().c_str());
           curl_easy_perform(curl);
           std::cout << " Eddie Packet Sent\n";
         }
-        else {
-//        if(header.from_node == REMOTE_SOIL_ADDR) {
+        if(header.from_node == MINI_EDDIE_ADDR) {
           PayloadRemoteSoil payload;
           network.read(header,&payload,sizeof(payload));
-          std::cout << payload.voltage << "\n" << payload.soil1 << "\n";
+          std::stringstream data;
+          data << "https://api.thingspeak.com/update"
+               << "?api_key=" << mini_eddie_key
+               << "&field1="  << payload.voltage
+               << "&field2="  << payload.soil1;
+
+          curl_easy_setopt(curl, CURLOPT_URL, data.str().c_str());
+          curl_easy_perform(curl);
+          std::cout << " Mini Eddie Packet Sent\n";
         }
       }
       delay(2000);
@@ -86,7 +94,7 @@ int main(int argc, char *argv[]) {
     curl_global_cleanup();
     return EXIT_SUCCESS;
   }
-  std::cout << "Expected to find THINGSPEAK_API_KEY environment variable to be defined\n";
+  std::cout << "Expected to find EDDIE_API_KEY and MINI_EDDIE_API_KEY environment variables to be defined\n";
   return EXIT_FAILURE;
 }
 

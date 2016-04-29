@@ -12,7 +12,7 @@ endif
 
 ifeq "$(RPI)" "1"
 # The recommended compiler flags for the Raspberry Pi
-CCFLAGS=-march=$(ARCH) -mtune=arm1176jzf-s -std=c++0x
+CCFLAGS=-Ofast -mfpu=vfp -mfloat-abi=hard -march=$(ARCH) -mtune=arm1176jzf-s -std=c++0x
 endif
 
 all: receiver
