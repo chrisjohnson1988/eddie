@@ -21,7 +21,7 @@ using the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
 
 The required libraries are:
 
-- [DHT](https://github.com/adafruit/DHT-sensor-library)
+- [DHT](https://github.com/markruys/arduino-DHT)
 - [RF24](https://github.com/TMRh20/RF24.git)
 - [RF24Network](https://github.com/TMRh20/RF24Network.git)
 
