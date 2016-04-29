@@ -2,6 +2,7 @@
 #include <RF24Network/RF24Network.h>
 #include <cstdlib>
 #include <iostream>
+#include <cmath>
 #include <stdio.h>
 #include <curl/curl.h>
 #include <sstream>
@@ -11,6 +12,7 @@ RF24Network network(radio);
 
 const uint16_t MY_ADDR = 00;
 const uint16_t ARDUINO_ADDR = 01;
+const uint16_t REMOTE_SOIL_ADDR = 011;
 
 struct Payload {
   float in_temp;
@@ -20,6 +22,11 @@ struct Payload {
   float voltage;
   uint16_t soil1;
   uint16_t soil2;
+};
+
+struct PayloadRemoteSoil {
+  float voltage;
+  uint16_t soil1;
 };
 
 /**
@@ -43,27 +50,36 @@ int main(int argc, char *argv[]) {
 
     while(1) {
       network.update();
+
       while ( network.available() ) {
         RF24NetworkHeader header;
-        Payload payload;
-        network.read(header,&payload,sizeof(payload));
+        network.peek(header);
 
         if(header.from_node == ARDUINO_ADDR) {
+          Payload payload;
+          network.read(header,&payload,sizeof(payload));
           std::stringstream data;
-          data << "https://api.thingspeak.com/update?"
-               << "api_key=" << api_key          << "&"
-               << "field1="  << payload.in_temp  << "&"
-               << "field2="  << payload.in_hum   << "&"
-               << "field3="  << payload.out_temp << "&"
-               << "field4="  << payload.out_hum  << "&"
-               << "field5="  << payload.voltage  << "&"
-               << "field6="  << payload.soil1    << "&"
-               << "field7="  << payload.soil2;
+          data << "https://api.thingspeak.com/update"
+               << "?api_key=" << api_key
+               << "&field5="  << payload.voltage
+               << "&field6="  << payload.soil1
+               << "&field7="  << payload.soil2;
 
-           curl_easy_setopt(curl, CURLOPT_URL, data.str().c_str());
-           curl_easy_perform(curl);
-           std::cout << " Packet Send\n";
-         }
+          if(!std::isnan(payload.in_temp )) { data << "&field1=" << payload.in_temp; }
+          if(!std::isnan(payload.in_hum  )) { data << "&field2=" << payload.in_hum; }
+          if(!std::isnan(payload.out_temp)) { data << "&field3=" << payload.out_temp; }
+          if(!std::isnan(payload.out_hum )) { data << "&field4=" << payload.out_hum; }
+
+          curl_easy_setopt(curl, CURLOPT_URL, data.str().c_str());
+          curl_easy_perform(curl);
+          std::cout << " Eddie Packet Sent\n";
+        }
+        else {
+//        if(header.from_node == REMOTE_SOIL_ADDR) {
+          PayloadRemoteSoil payload;
+          network.read(header,&payload,sizeof(payload));
+          std::cout << payload.voltage << "\n" << payload.soil1 << "\n";
+        }
       }
       delay(2000);
     }
