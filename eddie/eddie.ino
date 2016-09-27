@@ -14,6 +14,9 @@ const uint16_t RASPBERRYPI_ADDR = 00;
 const int SOIL_VCC = 9;
 const int CYCLE = 16;
 const int DHT_SLEEP = 6;
+const float MIN_VOLTAGE = 3.75;
+const float MAX_VOLTAGE = 4.15;
+const float DIFF_VOLTAGE = MAX_VOLTAGE - MIN_VOLTAGE;
 
 struct Payload {
   float in_temp;
@@ -93,7 +96,7 @@ void loop() {
   send(data);
 
   boolean slept = true;
-  int on = max(min(data.voltage - 3.2, 1),0) * CYCLE;
+  int on = max(min((data.voltage - MIN_VOLTAGE)/DIFF_VOLTAGE, 1),0) * CYCLE;
   int off = CYCLE - on;
   if(on != 0) {
     slept = network.sleepNode(on, 0); // Sleep, wake on packet recieved
