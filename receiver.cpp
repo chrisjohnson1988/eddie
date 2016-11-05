@@ -122,6 +122,7 @@ int main(int argc, char *argv[]) {
       else {
         int status;
         wait(&status);
+        delay(10000);
         std::cout << "Watchdog Restarting\n";
       }
     }
