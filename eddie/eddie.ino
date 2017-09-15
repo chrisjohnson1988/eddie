@@ -39,7 +39,7 @@ void setup(void) {
   radio.setPALevel(RF24_PA_MAX);
   radio.setCRCLength(RF24_CRC_8);
   network.begin(108, MY_ADDR);
-  network.setup_watchdog(6); // 1 second cycle
+  network.setup_watchdog(9); // 8 second cycle
   
   in_dht.setup(6);
   ext_dht.setup(5);
@@ -92,19 +92,7 @@ void loop() {
   radio.powerUp();
   send(data);
 
-  boolean slept = true;
-  int on = max(min(data.voltage - 3.2, 1),0) * CYCLE;
-  int off = CYCLE - on;
-  if(on != 0) {
-    slept = network.sleepNode(on, 0); // Sleep, wake on packet recieved
-  }
-  
-  if(off != 0) {
-    radio.powerDown();     
-    network.sleepNode(off, 255); // Sleep with no chance of waking     
-  }
-  
-  if(slept || off >= DHT_SLEEP) { 
-    reset(); // Reset the dht sensors if slept longer than DHT_SLEEP
-  }
+  radio.powerDown();     
+  network.sleepNode(off, 255); // Sleep with no chance of waking     
+  reset(); // Reset the dht sensors if slept longer than DHT_SLEEP
 }
